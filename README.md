@@ -47,3 +47,42 @@ Automated tests
 A license, preferably in a LICENSE file in the repository root. We don’t require any specific license, nor will we ever share your work without your permission. The license should, at a very minimum, allow us to access and store your work. If you want to use an OS license, feel free to do so.
 Usage of the WordPress native functionalities whenever possible (don’t reinvent the wheel).
 The lack of optional features will not generate a negative evaluation. But truth to be told, we can’t say the same about poorly implemented optional features.
+
+
+## Plugin Structure
+
+restaurant-booking/
+├── blocks/
+│   ├── booking-form/
+│   │   ├── index.js            # Main block entry point
+│   │   ├── BookingForm.js      # React component for the booking form
+│   │   ├── BookingFormEditor.js# Block editor component
+│   │   ├── style.css           # Block-specific CSS
+│   │   └── ...
+│   ├── reservation-list/
+│   │   ├── index.js            # Main block entry point
+│   │   ├── ReservationList.js  # React component for listing reservations
+│   │   ├── ReservationListEditor.js # Block editor component
+│   │   ├── style.css           # Block-specific CSS
+│   │   └── ...
+│   └── ...                     # Additional blocks as needed
+├── css/
+│   ├── style.css               # Global styles for the entire plugin
+│   └── ...
+├── includes/
+│   ├── functions.php           # Main plugin functions
+│   ├── ReservationManager.php  # PHP class for managing reservations
+│   ├── ...
+├── languages/
+│   ├── restaurant-booking.pot  # Translation template file
+│   ├── en_US.po                # English translations
+│   ├── de_DE.po                # German translations (example)
+│   └── ...
+├── templates/
+│   ├── booking-form.php        # HTML/PHP template for booking form
+│   ├── reservation-list.php    # HTML/PHP template for reservation list
+│   └── ...
+├── restaurant-booking.php      # Main plugin file
+├── README.md                   # Plugin documentation
+├── LICENSE                     # Plugin license file
+└── ...
