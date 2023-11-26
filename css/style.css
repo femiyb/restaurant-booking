@@ -1,0 +1,64 @@
+/* Reset default margin and padding for consistency */
+body, h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Global styles for headings */
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  /* Global styles for paragraphs */
+  p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  
+  /* Global button styles */
+  .button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0073e6;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button:hover {
+    background-color: #005bb7;
+  }
+  
+  /* Global container styles */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Add more global styles as needed */
+  
+  /* Example: Responsive styles */
+  @media screen and (max-width: 768px) {
+    h1 {
+      font-size: 20px;
+    }
+  
+    /* Add responsive styles for other elements */
+  }
+  
+

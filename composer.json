@@ -1,0 +1,21 @@
+{
+    "name": "femi/restaurant-booking",
+    "description": "Effortlessly manage restaurant reservations on your WordPress website with our user-friendly plugin. Simplify bookings, optimize table occupancy, and enhance the dining experience for your customers.",
+    "type": "project",
+    "license": "GNU GENERAL PUBLIC LICENSE",
+    "autoload": {
+        "psr-4": {
+            "RestaurantBooking\\": [
+                ""
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Femi",
+            "email": "femiyb@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

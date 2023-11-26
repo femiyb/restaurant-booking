@@ -1,0 +1,20 @@
+{
+  "name": "restaurant-booking",
+  "version": "1.0.0",
+  "description": "Effortlessly manage restaurant reservations on your WordPress website with our user-friendly plugin. Simplify bookings, optimize table occupancy, and enhance the dining experience for your customers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/femiyb/restaurant-booking.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/femiyb/restaurant-booking/issues"
+  },
+  "homepage": "https://github.com/femiyb/restaurant-booking#readme"
+}
