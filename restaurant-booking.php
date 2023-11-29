@@ -3,7 +3,7 @@
 Plugin Name:    Restaurant Booking
 Description:    A WordPress plugin for managing restaurant reservations.
 Version:        1.0
-Author:         Your Name
+Author:         Femi
 License:        GNU GENERAL PUBLIC LICENSE
 */
 
@@ -29,12 +29,10 @@ function plugin_autoloader($class_name) {
 // Initialize the autoloader
 spl_autoload_register(__NAMESPACE__ . '\plugin_autoloader');
 
-use RestaurantBooking\Classes\ReservationManager;
 use RestaurantBooking\Includes\SettingsPage;
 use RestaurantBooking\Includes\ReservationFunctions;
 
 
-$ReservationManager = new ReservationManager(); // this works!
 $ReservationFunctions = new ReservationFunctions(); // this works!
 
 
@@ -59,10 +57,10 @@ function restaurant_plugin_activate() {
             id INT NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
-            phone VARCHAR(20) NOT NULL,  // Add the Phone column
+            phone VARCHAR(20) NOT NULL,
             guests INT NOT NULL,
             reservation_date DATE NOT NULL,
-            reservation_time TIME NOT NULL,  // Add the Reservation Time column
+            reservation_time TIME NOT NULL,
             PRIMARY KEY (id)
         ) $charset_collate;";
     
@@ -114,13 +112,25 @@ function enqueue_custom_block_script() {
             filemtime(plugin_dir_path(__FILE__) . 'blocks/booking-form/BookingForm.js'), // Corrected file path
             true // Make sure to set this to true for the script type to be "module"
         );
+
+        function enqueue_reservation_list_block_script() {
+            wp_enqueue_script(
+                'reservation-list-block',
+                plugin_dir_url(__FILE__) . 'blocks/reservation-list/reservation-list-block.js',
+                array('wp-blocks', 'wp-components', 'wp-element'),
+                filemtime(plugin_dir_path(__FILE__) . 'blocks/reservation-list/reservation-list-block.js')
+            );
+        }
+        
+        add_action('enqueue_block_editor_assets', 'enqueue_reservation_list_block_script');
+        
     }
 }
 add_action('enqueue_block_editor_assets', 'RestaurantBooking\enqueue_custom_block_script');
 
 
 function enqueue_ajax_script() {
-    wp_enqueue_script('restaurant-booking-ajax', plugin_dir_url(__FILE__) . 'js/ajax.js', array('jquery'), '1.0', true);
+    wp_enqueue_script('restaurant-booking-ajax', plugin_dir_url(__FILE__) . 'includes/js/ajax.js', array('jquery'), '1.0', true);
 
     // Pass the AJAX URL to the script
     wp_localize_script('restaurant-booking-ajax', 'restaurant_booking_ajax', array(

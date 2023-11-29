@@ -16,48 +16,23 @@ public function __construct() {
     add_action('init', array($this, 'process_reservation_form'));
 }
 
-function create_reservation($reservation_data) {
-    // Implement reservation creation logic here
-    // Example: Insert reservation data into the database
-    // Replace with your actual database operations
-    $reservation_id = wp_insert_post(array(
-        'post_title'   => sanitize_text_field($reservation_data['name']),
-        'post_content' => sanitize_text_field($reservation_data['message']),
-        'post_type'    => 'reservation', // Replace with your custom post type name
-        'post_status'  => 'publish',
-    ));
-
-    if (is_wp_error($reservation_id)) {
-        return $reservation_id;
-    }
-
-    // Add custom fields (e.g., date, time, party size) to the reservation post
-    update_post_meta($reservation_id, 'reservation_date', sanitize_text_field($reservation_data['date']));
-    update_post_meta($reservation_id, 'reservation_time', sanitize_text_field($reservation_data['time']));
-    update_post_meta($reservation_id, 'party_size', intval($reservation_data['party_size']));
-
-    // Additional reservation processing as needed
-
-    return $reservation_id;
-}
-
 /**
  * Retrieve a list of reservations.
  *
  * @return array List of reservations.
  */
-function get_reservations() {
-    // Implement reservation retrieval logic here
-    // Example: Query reservations from the database
-    // Replace with your actual database queries
-    $args = array(
-        'post_type'      => 'reservation', // Replace with your custom post type name
-        'post_status'    => 'publish',
-        'posts_per_page' => -1, // Retrieve all reservations
-    );
 
-    $reservations = get_posts($args);
+public function get_reservations() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'reservation_bookings';
 
+    // Define your SQL query to retrieve reservations
+    $query = "SELECT * FROM $table_name";
+
+    // Use $wpdb to execute the query and get results
+    $reservations = $wpdb->get_results($query);
+
+    // Return the reservations as an array
     return $reservations;
 }
 
@@ -67,26 +42,20 @@ function get_reservations() {
  * @param int $reservation_id The ID of the reservation to delete.
  * @return bool True on success, false on failure.
  */
-function delete_reservation($reservation_id) {
-    // Implement reservation deletion logic here
-    // Example: Delete the reservation post and associated data
-    // Replace with your actual deletion logic
-    $deleted = wp_delete_post($reservation_id, true);
+public function delete_reservation($reservation_id) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'reservation_bookings';
 
-    return $deleted;
+    // Define the deletion query with a WHERE clause to target the specific reservation by ID
+    $query = $wpdb->prepare("DELETE FROM $table_name WHERE id = %d", $reservation_id);
+
+    // Use $wpdb to execute the deletion query
+    $wpdb->query($query);
 }
 
 // Additional reservation-related functions and utility code can be added here
 
 // Define other plugin-specific functions and utility code as needed
-
-// Example: Function to display a reservation form
-function display_reservation_form() {
-    // Implement the HTML/PHP for your reservation form
-    echo '<form action="" method="post">';
-    // Add form fields and submit button
-    echo '</form>';
-}
 
 // Example: Function to process form submissions
 function process_reservation_form() {
