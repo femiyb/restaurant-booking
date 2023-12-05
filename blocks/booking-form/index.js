@@ -1,4 +1,4 @@
-import { registerBlockType } from '@wordpress/blocks';
+/* import { registerBlockType } from '@wordpress/blocks';
 import { TextControl } from '@wordpress/components';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
@@ -22,7 +22,6 @@ registerBlockType('restaurant-booking/booking-form', {
           value={attributes.date}
           onChange={(value) => setAttributes({ date: value })}
         />
-        {/* Add more fields for time, party size, etc. */}
       </div>
     );
   },
@@ -31,3 +30,4 @@ registerBlockType('restaurant-booking/booking-form', {
     return null;
   },
 });
+*/

@@ -4,28 +4,8 @@ const { TextControl, Button } = wp.components;
 // Get the current date and time
 const now = new Date();
 const formattedDate = now.toISOString().substr(0, 10); // Get the current date in 'YYYY-MM-DD' format
-now.setHours(now.getHours() + 1); // Add 1 hour to the current time
 
-// Define a function to generate time options with 30-minute intervals
-function generateTimeOptions() {
-    const timeOptions = [];
-    const interval = 30; // 30 minutes interval
-    let time = new Date(now);
 
-    // Generate time options with 30-minute intervals for the next 12 hours
-    for (let i = 0; i < 12 * 2; i++) {
-        const hours = time.getHours();
-        const minutes = time.getMinutes();
-        const timeString = `${hours.toString().padStart(2, '0')}:${minutes === 0 ? '00' : '30'}`;
-        timeOptions.push(timeString);
-        time.setMinutes(time.getMinutes() + interval); // Add 30 minutes for the next interval
-    }
-
-    return timeOptions;
-}
-
-// Generate an array of time options
-const timeOptions = generateTimeOptions();
 
 registerBlockType('restaurant-booking/booking-form', {
     title: 'Booking Form',
@@ -99,35 +79,15 @@ registerBlockType('restaurant-booking/booking-form', {
                     max: '4', // Maximum value allowed (adjust as needed)
                 }
             ),
-            wp.element.createElement(
-                TextControl,
-                {
-                    label: 'Date',
-                    value: attributes.date,
-                    onChange: (date) => setAttributes({ date }),
-                    type: 'date',
-                    required: 'required', // Add the "required" attribute here
-                    min: formattedDate, // Set the minimum date to the current date
-                }
-            ),
-            wp.element.createElement(
-                TextControl, // Add a TextControl for the "Reservation Time"
-                {
-                    label: 'Reservation Time',
-                    value: attributes.time,
-                    onChange: (time) => setAttributes({ time }),
-                    type: 'time',
-                    required: 'required', // Add the "required" attribute here
-                    min: now.toTimeString().substring(0, 5), // Set the minimum time to the current time
-                }
-            ),
+     
+     
             wp.element.createElement(
                 Button,
                 {
                     isPrimary: true,
                     onClick: () => {
                         // Handle form submission here
-                        console.log('Form submitted:', attributes);
+                        console.log('Form submitted:', attributes); 
                     },
                 },
                 'Submit'
@@ -209,45 +169,8 @@ registerBlockType('restaurant-booking/booking-form', {
                         }
                     )
                 ),
-                wp.element.createElement(
-                    'label',
-                    null,
-                    'Date',
-                    wp.element.createElement(
-                        'input',
-                        {
-                            type: 'date',
-                            name: 'reservation_date',
-                            value: formattedDate,
-                            class: 'res-booking-form-Date',
-                            required: 'required', // Add the "required" attribute here
-                            min: formattedDate, // Set the minimum date to the current date
-                        }
-                    )
-                ),
-                wp.element.createElement(
-                    'label',
-                    null,
-                    'Time',
-                    wp.element.createElement(
-                        'select', // Use a select element for time selection
-                        {
-                            name: 'reservation_time',
-                            class: 'res-booking-form-Time',
-                            required: 'required',
-                        },
-                        timeOptions.map((timeOption) =>
-                            wp.element.createElement(
-                                'option',
-                                {
-                                    key: timeOption,
-                                    value: timeOption,
-                                },
-                                timeOption
-                            )
-                        )
-                    )
-                ),
+                
+            
                 wp.element.createElement(
                     'button',
                     {

@@ -1,4 +1,4 @@
-import { TextControl, Button } from '@wordpress/components';
+/*import { TextControl, Button } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 
 const BookingForm = () => {
@@ -52,3 +52,4 @@ const BookingForm = () => {
 };
 
 export default BookingForm;
+*/

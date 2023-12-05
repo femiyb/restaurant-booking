@@ -122,9 +122,4 @@ public static function calculateAvailableSlots($date) {
 }
 
 
-
-
-
-
-
 }

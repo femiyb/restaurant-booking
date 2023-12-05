@@ -70,17 +70,16 @@ restaurant-booking/
 │   ├── style.css               # Global styles for the entire plugin
 │   └── ...
 ├── includes/
-│   ├── functions.php           # Main plugin functions
+│   ├── js/
+│   │   ├── ajax.js            #
+│   │   ├── reservation-admin.js            #
+│   ├── SettingsPage.php           # Main plugin functions
 │   ├── ReservationManager.php  # PHP class for managing reservations
 │   ├── ...
 ├── languages/
 │   ├── restaurant-booking.pot  # Translation template file
 │   ├── en_US.po                # English translations
 │   ├── de_DE.po                # German translations (example)
-│   └── ...
-├── templates/
-│   ├── booking-form.php        # HTML/PHP template for booking form
-│   ├── reservation-list.php    # HTML/PHP template for reservation list
 │   └── ...
 ├── restaurant-booking.php      # Main plugin file
 ├── README.md                   # Plugin documentation

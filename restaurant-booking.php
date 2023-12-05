@@ -113,20 +113,40 @@ function enqueue_custom_block_script() {
             true // Make sure to set this to true for the script type to be "module"
         );
 
-        function enqueue_reservation_list_block_script() {
-            wp_enqueue_script(
-                'reservation-list-block',
-                plugin_dir_url(__FILE__) . 'blocks/reservation-list/reservation-list-block.js',
-                array('wp-blocks', 'wp-components', 'wp-element'),
-                filemtime(plugin_dir_path(__FILE__) . 'blocks/reservation-list/reservation-list-block.js')
-            );
-        }
         
-        add_action('enqueue_block_editor_assets', 'enqueue_reservation_list_block_script');
         
     }
 }
 add_action('enqueue_block_editor_assets', 'RestaurantBooking\enqueue_custom_block_script');
+
+function restaurant_booking_register_reservation_list_block() {
+    // Register the block editor script
+    wp_register_script(
+        'reservation-list-block-editor',
+        plugins_url('/blocks/reservation-list/reservation-list-block.js', __FILE__),
+        array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor'),
+        filemtime(plugin_dir_path(__FILE__) . '/blocks/reservation-list/reservation-list-block.js')
+    );
+
+    // Register the block editor styles
+    wp_register_style(
+        'reservation-list-block-editor-style',
+        plugins_url('/blocks/reservation-list/style.css', __FILE__),
+        array(),
+        filemtime(plugin_dir_path(__FILE__) . '/blocks/reservation-list/style.css')
+    );
+
+    // Register the block
+    register_block_type('restaurant-booking/reservation-list', array(
+        'editor_script' => 'reservation-list-block-editor',
+        'editor_style'  => 'reservation-list-block-editor-style',
+        'render_callback' => 'RestaurantBooking\render_reservation_list_block',
+
+    ));
+}
+
+add_action('init', 'RestaurantBooking\restaurant_booking_register_reservation_list_block');
+
 
 
 function enqueue_ajax_script() {
@@ -139,6 +159,80 @@ function enqueue_ajax_script() {
 }
 add_action('wp_enqueue_scripts', 'RestaurantBooking\enqueue_ajax_script');
 
+
+// Define plugin initialization (if needed)
+function init() {
+    // Add your initialization logic here
+    add_action('rest_api_init', __NAMESPACE__ . '\register_rest_routes');
+
+}
+add_action('init', __NAMESPACE__ . '\init');
+
+
+// Register the REST API endpoint for fetching reservations
+// Add the REST API route for fetching reservations
+
+
+function register_rest_routes() {
+    // Register the 'get-reservations' route
+    register_rest_route(
+        'restaurant-booking/v1',
+        '/get-reservations',
+        array(
+            'methods'             => 'GET',
+            'callback'            => (__NAMESPACE__ . '\get_reservations_callback'),
+            'permission_callback' => '__return_true', // Allow public access
+        )
+    );
+}
+
+
+
+function get_reservations_callback($request) {
+    // Include any necessary files and global variables
+    global $wpdb;
+    
+    // Your database table name
+    $table_name = $wpdb->prefix . 'reservation_bookings';
+
+    // Define your SQL query to retrieve reservations
+    $query = "SELECT * FROM $table_name";
+
+    // Use $wpdb to execute the query and get results
+    $reservations = $wpdb->get_results($query);
+
+    // Return the reservations as JSON
+    return rest_ensure_response($reservations);
+}
+
+
+
+function render_reservation_list_block() {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'reservation_bookings';
+    $reservations = $wpdb->get_results("SELECT * FROM {$table_name}");
+
+    if ( empty( $reservations ) ) {
+        return 'No reservations found.';
+    }
+
+    $output = '<ul class="reservation-list">';
+    foreach ( $reservations as $reservation ) {
+        $output .= sprintf(
+            '<li>Reservation for %s on %s at %s for %d guests</li>',
+            esc_html( $reservation->name ),
+            esc_html( $reservation->reservation_date ),
+            esc_html( $reservation->reservation_time ),
+            intval( $reservation->guests )
+        );
+    }
+    $output .= '</ul>';
+
+    return $output;
+}
+
+
+
 // Register custom post types, taxonomies, and other plugin-specific features here
 // Example:
 // add_action('init', 'RestaurantBooking\register_post_types');
@@ -150,17 +244,14 @@ add_action('wp_enqueue_scripts', 'RestaurantBooking\enqueue_ajax_script');
 
 // Include additional plugin-specific functionality and hooks below
 
-// Define plugin initialization (if needed)
-function init() {
-    // Add your initialization logic here
-}
-add_action('init', __NAMESPACE__ . '\init');
+
 
 
 
 // Include any other hooks and functions as needed for your plugin
 
 // Register a custom post type for reservations
+/*
 function register_reservation_post_type() {
     $labels = array(
         'name' => 'Reservations',
@@ -188,9 +279,10 @@ function register_reservation_post_type() {
 
     register_post_type('reservation', $args);
 }
-add_action('init', __NAMESPACE__ . '\register_reservation_post_type');
+add_action('init', __NAMESPACE__ . '\register_reservation_post_type'); */ 
 
 // Register a custom taxonomy for reservation types
+/*
 function register_reservation_type_taxonomy() {
     $labels = array(
         'name' => 'Reservation Types',
@@ -214,3 +306,4 @@ function register_reservation_type_taxonomy() {
 
     register_taxonomy('reservation_type', 'reservation', $args);
 }
+*/
