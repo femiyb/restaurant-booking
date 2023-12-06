@@ -1,11 +1,5 @@
 const { registerBlockType } = wp.blocks;
-const { TextControl, Button } = wp.components;
-
-// Get the current date and time
-const now = new Date();
-const formattedDate = now.toISOString().substr(0, 10); // Get the current date in 'YYYY-MM-DD' format
-
-
+const { TextControl, Button, DatePicker, TimePicker } = wp.components;
 
 registerBlockType('restaurant-booking/booking-form', {
     title: 'Booking Form',
@@ -40,6 +34,20 @@ registerBlockType('restaurant-booking/booking-form', {
     edit: function(props) {
         const { attributes, setAttributes } = props;
 
+        const handleDateChange = (date) => {
+            // Check if the selected date is not in the past
+            if (date && date.getTime() >= new Date().getTime()) {
+                setAttributes({ date: date.toISOString() });
+            } else {
+                // Display an error or message if the date is in the past
+                console.log('Selected date cannot be in the past');
+            }
+        };
+
+        const handleTimeChange = (time) => {
+            setAttributes({ time });
+        };
+
         return wp.element.createElement(
             'div',
             null,
@@ -71,23 +79,38 @@ registerBlockType('restaurant-booking/booking-form', {
                 TextControl,
                 {
                     label: 'Number of Guests',
-                    value: attributes.guests.toString(), // Convert to string
-                    onChange: (guests) => setAttributes({ guests: parseInt(guests) || 0 }), // Ensure it's an integer
+                    value: attributes.guests.toString(),
+                    onChange: (guests) => setAttributes({ guests: parseInt(guests) || 0 }),
                     type: 'number',
-                    required: 'required', // Add the "required" attribute here
-                    min: '1', // Minimum value allowed (1 or higher)
-                    max: '4', // Maximum value allowed (adjust as needed)
+                    required: 'required',
+                    min: '1',
+                    max: '4',
                 }
             ),
-     
-     
+            wp.element.createElement(
+                DatePicker,
+                {
+                    label: 'Date',
+                    currentDate: attributes.date ? new Date(attributes.date) : undefined,
+                    onChange: handleDateChange,
+                    minDate: new Date(), // Disable past dates
+                }
+            ),
+            wp.element.createElement(
+                TimePicker,
+                {
+                    label: 'Time',
+                    currentTime: attributes.time,
+                    onChange: handleTimeChange,
+                }
+            ),
             wp.element.createElement(
                 Button,
                 {
                     isPrimary: true,
                     onClick: () => {
                         // Handle form submission here
-                        console.log('Form submitted:', attributes); 
+                        console.log('Form submitted:', attributes);
                     },
                 },
                 'Submit'
@@ -95,82 +118,55 @@ registerBlockType('restaurant-booking/booking-form', {
         );
     },
     save: function() {
-        // Define the HTML structure of your booking form here
+        // Define the HTML structure of your booking form here for rendering on the front end
         return wp.element.createElement(
             'div',
             null,
             wp.element.createElement(
                 'form',
                 {
-                    //action: '',
-                    method: 'POST', // Change this to 'GET' if needed
+                    method: 'POST',
                     class: 'res-booking-form',
-                    name: 'submit_reservation'
+                    name: 'submit_reservation',
                 },
-                wp.element.createElement(
-                    'label',
-                    null,
-                    'Name',
-                    wp.element.createElement(
-                        'input',
-                        {
-                            type: 'text',
-                            name: 'name',
-                            value: '',
-                            class: 'res-booking-form-Name',
-                            required: 'required', // Add the "required" attribute here
-                        }
-                    )
-                ),
-                wp.element.createElement(
-                    'label',
-                    null,
-                    'Email',
-                    wp.element.createElement(
-                        'input',
-                        {
-                            type: 'email',
-                            name: 'email',
-                            value: '',
-                            class: 'res-booking-form-Email',
-                            required: 'required', // Add the "required" attribute here
-                        }
-                    )
-                ),
-                wp.element.createElement(
-                    'label',
-                    null,
-                    'Phone',
-                    wp.element.createElement(
-                        'input',
-                        {
-                            type: 'number',
-                            name: 'phone',
-                            value: '',
-                            class: 'res-booking-form-Phone',
-                            required: 'required', // Add the "required" attribute here
-                        }
-                    )
-                ),
-                wp.element.createElement(
-                    'label',
-                    null,
-                    'Number of Guests',
-                    wp.element.createElement(
-                        'input',
-                        {
-                            type: 'number',
-                            name: 'guests',
-                            value: '',
-                            class: 'res-booking-form-Guests',
-                            required: 'required', // Add the "required" attribute here
-                            min: '1', // Minimum value allowed (1 or higher)
-                            max: '4', // Maximum value allowed (adjust as needed)
-                        }
-                    )
-                ),
-                
-            
+                wp.element.createElement('input', {
+                    type: 'text',
+                    name: 'name',
+                    value: '{{attributes.name}}',
+                    class: 'res-booking-form-Name',
+                }),
+                wp.element.createElement('input', {
+                    type: 'email',
+                    name: 'email',
+                    value: '{{attributes.email}}',
+                    class: 'res-booking-form-Email',
+                }),
+                wp.element.createElement('input', {
+                    type: 'text',
+                    name: 'phone',
+                    value: '{{attributes.phone}}',
+                    class: 'res-booking-form-Phone',
+                }),
+                wp.element.createElement('input', {
+                    type: 'number',
+                    name: 'guests',
+                    value: '{{attributes.guests}}',
+                    class: 'res-booking-form-Guests',
+                    min: '1',
+                    max: '4',
+                }),
+                wp.element.createElement('input', {
+                    type: 'date',
+                    name: 'date',
+                    value: '{{attributes.date}}',
+                    class: 'res-booking-form-Date',
+                }),
+                wp.element.createElement('input', {
+                    type: 'time',
+                    name: 'time',
+                    value: '{{attributes.time}}',
+                    class: 'res-booking-form-Time',
+                }),
                 wp.element.createElement(
                     'button',
                     {
