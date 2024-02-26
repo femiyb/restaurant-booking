@@ -107,11 +107,8 @@ registerBlockType('restaurant-booking/booking-form', {
             wp.element.createElement(
                 Button,
                 {
+                    type: 'submit',
                     isPrimary: true,
-                    onClick: () => {
-                        // Handle form submission here
-                        console.log('Form submitted:', attributes);
-                    },
                 },
                 'Submit'
             )
@@ -132,40 +129,46 @@ registerBlockType('restaurant-booking/booking-form', {
                 wp.element.createElement('input', {
                     type: 'text',
                     name: 'name',
-                    value: '{{attributes.name}}',
                     class: 'res-booking-form-Name',
+                    required: 'required',
+                    placeholder: 'Enter your name',
                 }),
                 wp.element.createElement('input', {
                     type: 'email',
                     name: 'email',
-                    value: '{{attributes.email}}',
                     class: 'res-booking-form-Email',
+                    required: 'required',
+                    placeholder: 'Enter your email',
                 }),
                 wp.element.createElement('input', {
                     type: 'text',
                     name: 'phone',
-                    value: '{{attributes.phone}}',
                     class: 'res-booking-form-Phone',
+                    required: 'required',
+                    placeholder: 'Enter your phone number',
                 }),
                 wp.element.createElement('input', {
                     type: 'number',
                     name: 'guests',
-                    value: '{{attributes.guests}}',
                     class: 'res-booking-form-Guests',
+                    required: 'required',
                     min: '1',
                     max: '4',
+                    placeholder: 'Number of guests',
                 }),
                 wp.element.createElement('input', {
                     type: 'date',
                     name: 'date',
-                    value: '{{attributes.date}}',
                     class: 'res-booking-form-Date',
+                    required: 'required',
+                    placeholder: 'Select a date',
                 }),
                 wp.element.createElement('input', {
                     type: 'time',
                     name: 'time',
-                    value: '{{attributes.time}}',
                     class: 'res-booking-form-Time',
+                    required: 'required',
+                    placeholder: 'Select a time',
                 }),
                 wp.element.createElement(
                     'button',

@@ -14,7 +14,20 @@ class ReservationFunctions {
 
 public function __construct() {
     add_action('init', array($this, 'process_reservation_form'));
+    add_action('wp_ajax_handle_form_submission', array($this, 'handle_form_submission'));
+    add_action('wp_ajax_nopriv_handle_form_submission', array($this, '    handle_form_submission
+    '));
+
 }
+
+
+function handle_form_submission() {
+    // Validate and sanitize input data
+    // Perform your server-side logic (e.g., save to database, send email)
+
+    wp_send_json_success('Form submitted successfully');
+}
+
 
 /**
  * Retrieve a list of reservations.
@@ -63,15 +76,16 @@ function process_reservation_form() {
         $name = sanitize_text_field($_POST['name']);
         $email = sanitize_email($_POST['email']);
         $phone = sanitize_text_field($_POST['phone']); // Add phone field
-        $reservation_date = sanitize_text_field($_POST['reservation_date']);
-        $reservation_time = sanitize_text_field($_POST['reservation_time']); // Add time field
+        $reservation_date = sanitize_text_field($_POST['date']);
+        $reservation_time = sanitize_text_field($_POST['time']); // Add time field
         $guests = intval($_POST['guests']); // Convert to integer
     
         // Insert the reservation booking into the database
         $this->insert_reservation_booking($name, $email, $phone, $reservation_date, $reservation_time, $guests);
     
         // Optionally, redirect the user to a confirmation page
-        exit();
+       wp_redirect(add_query_arg('form_submitted', 'yes', get_permalink()));
+        exit;
     }
 }
 
