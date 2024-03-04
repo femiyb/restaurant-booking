@@ -1,5 +1,6 @@
 const { registerBlockType } = wp.blocks;
 const { TextControl, Button, DatePicker, TimePicker } = wp.components;
+const { useState } = wp.element;
 
 registerBlockType('restaurant-booking/booking-form', {
     title: 'Booking Form',
@@ -30,9 +31,15 @@ registerBlockType('restaurant-booking/booking-form', {
             type: 'string',
             default: '',
         },
+        submitted: {
+            type: 'boolean', // Define the 'submitted' attribute type
+            default: false,  // Set the default value to false
+        },
     },
     edit: function(props) {
         const { attributes, setAttributes } = props;
+
+        const [isSubmitting, setIsSubmitting] = useState(false);
 
         const handleDateChange = (date) => {
             // Check if the selected date is not in the past
@@ -48,9 +55,46 @@ registerBlockType('restaurant-booking/booking-form', {
             setAttributes({ time });
         };
 
+
+
+        const handleSubmit = (event) => {
+            event.preventDefault();
+            setIsSubmitting(true); // Indicate the submission process has started
+            
+            const formData = new FormData();
+            formData.append('name', attributes.name);
+            formData.append('email', attributes.email);
+            formData.append('phone', attributes.phone);
+            formData.append('guests', attributes.guests);
+            formData.append('date', attributes.date);
+            formData.append('time', attributes.time);
+            
+            // Ensure the endpoint URL is correct
+            fetch('/wp-json/restaurant-booking/v1/submit-form', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                // Only update `submitted` to true on successful submission
+                if (data && data.success) {
+                    setAttributes({ submitted: true });
+                }
+                setIsSubmitting(false); // Reset submission state regardless of success/failure
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                setIsSubmitting(false); // Ensure submission state is reset on failure
+            });
+        };
+        
+        if (attributes.submitted) {
+            return wp.element.createElement('div', null, 'Thank you for your reservation!');
+        } else {
         return wp.element.createElement(
             'div',
-            null,
+            { onSubmit: handleSubmit },
             wp.element.createElement(
                 TextControl,
                 {
@@ -109,11 +153,13 @@ registerBlockType('restaurant-booking/booking-form', {
                 {
                     type: 'submit',
                     isPrimary: true,
+                    disabled: isSubmitting,
+
                 },
                 'Submit'
             )
         );
-    },
+    }},
     save: function() {
         // Define the HTML structure of your booking form here for rendering on the front end
         return wp.element.createElement(
@@ -125,6 +171,7 @@ registerBlockType('restaurant-booking/booking-form', {
                     method: 'POST',
                     class: 'res-booking-form',
                     name: 'submit_reservation',
+                    action: ''
                 },
                 wp.element.createElement('input', {
                     type: 'text',

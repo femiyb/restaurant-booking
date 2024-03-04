@@ -1,6 +1,8 @@
 <?php
 namespace RestaurantBooking\Includes;
 
+use WP_Error;
+use WP_REST_Response;
 // Define reservation-related functions
 
 /**
@@ -14,18 +16,21 @@ class ReservationFunctions {
 
 public function __construct() {
     add_action('init', array($this, 'process_reservation_form'));
-    add_action('wp_ajax_handle_form_submission', array($this, 'handle_form_submission'));
-    add_action('wp_ajax_nopriv_handle_form_submission', array($this, '    handle_form_submission
-    '));
+    // add_action('wp_ajax_handle_form_submission', array($this, 'handle_form_submission'));
+    // add_action('wp_ajax_nopriv_handle_form_submission', array($this, '    handle_form_submission'));
+    add_action('rest_api_init', array($this, 'register_rest_routes'));
+
 
 }
 
 
-function handle_form_submission() {
-    // Validate and sanitize input data
-    // Perform your server-side logic (e.g., save to database, send email)
 
-    wp_send_json_success('Form submitted successfully');
+public function register_rest_routes() {
+    register_rest_route('restaurant-booking/v1', '/submit-form', array(
+        'methods' => 'POST',
+        'callback' => array($this, 'process_reservation_form'),
+        'permission_callback' => '__return_true', // You can implement permission checks here
+    ));
 }
 
 
@@ -82,10 +87,10 @@ function process_reservation_form() {
     
         // Insert the reservation booking into the database
         $this->insert_reservation_booking($name, $email, $phone, $reservation_date, $reservation_time, $guests);
-    
+       // return new WP_REST_Response(array('success' => true, 'message' => 'Thank you for your reservation!'), 200);
+
+      
         // Optionally, redirect the user to a confirmation page
-       wp_redirect(add_query_arg('form_submitted', 'yes', get_permalink()));
-        exit;
     }
 }
 
